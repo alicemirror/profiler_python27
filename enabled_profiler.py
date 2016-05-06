@@ -135,6 +135,26 @@ class EnabledProfiler:
         stats.sort_stats('module', 'name', 'time')
         stats.print_stats()
 
+# print_callers
+
+    ## Stop collecting profiling data and generates a satistics graphic report for callers and callees
+    #
+    # After the statistics object has been created, some adjustments are done for better readability of the
+    # results: \n
+    # long directory names are stripped from the modules (file names)\n
+    # statistics are sorted based on the followind keys (from left to right, by level sorting)\n\n
+    #
+    # Module name, Function name, Internal time
+    def statistics_calls(self):
+
+        stats = pstats.Stats(timingProf)
+
+        timingProf.create_stats()
+        stats.strip_dirs()
+        stats.sort_stats('module', 'name', 'time')
+        stats.print_callers()
+        stats.print_callees()
+
     ##
     # Generate the output of the acquired memory usage
     # If the memory sampling is not active any output is generated
@@ -176,3 +196,42 @@ class EnabledProfiler:
                 print "Time module profiling"
             print "------------------------------------------------"
             stats.print_stats(module)
+
+    ##
+    #   Stop collecting profiling data and generates a satistics report for a specific module if needed.
+    #   After the statistics object has been created, some adjustments are done for better readability of the
+    #
+    #   results: \n
+    #   long directory names are stripped from the modules (file names)\n
+    #   statistics are sorted based on the followind keys (from left to right, by level sorting)\n\n
+    #
+    #   Module name, Function name, Internal time\n\n
+    #
+    #   At last the statistics report is restricted to the specific module
+    #
+    #   \note If the module is not specified (default = None) this method has the same effect of statustucs()
+    def module_stats_calls(self, module = None, comment = None):
+
+        if module == None:
+            self.statistics()
+        else:
+            stats = pstats.Stats(timingProf)
+
+            timingProf.create_stats()
+            stats.strip_dirs()
+            stats.sort_stats('name', 'ncalls', 'time')
+            print "------------------------------------------------"
+            print ">>> CALLERS"
+            print "------------------------------------------------"
+            if not comment == None:
+                print comment
+            print "------------------------------------------------"
+            stats.print_callers(module)
+            print "\n\n"
+            print "------------------------------------------------"
+            print ">>> CALLEES"
+            print "------------------------------------------------"
+            if not comment == None:
+                print comment
+            print "------------------------------------------------"
+            stats.print_callees(module)
