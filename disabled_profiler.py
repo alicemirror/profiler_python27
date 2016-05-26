@@ -63,7 +63,7 @@ class DisabledProfiler:
     def module_stats(self, module = None, comment = None):
         pass
 
-    def statistics(self):
+    def statistics_calls(self):
         pass
 
     def module_stats_calls(self, module = None, comment = None):
