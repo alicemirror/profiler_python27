@@ -3,21 +3,27 @@
 # @package profiler
 # @brief Helper methods doing nothing when profiler is disabled
 #
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
-# General Public License as published by the Free Software Foundation, either version 3 of the License,
-# or (at your option) any later version. \n
-#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.\n
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n
 #
-# You should have received a copy of the GNU General Public License along with this program.
-# If not, see <http://www.gnu.org/licenses/ \n
+# Copyright NXP PLMA.  All Rights Reserved.\n
+#
+# Licensed under the Apache License, Version 2.0 (the "License");\n
+# you may not use this file except in compliance with the License.\n
+# You may obtain a copy of the License at\n
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied.  See the License for the specific language
+# governing permissions and limitations under the License.
 #
 # @date March 2016
 # @author Enrico Miglino <enrico.miglino@gmail.com>
-# @version 0.1.3
-# @version documentation version 0.4
+# @version 0.1.5
+# @version documentation version 0.5
 
 class DisabledProfiler:
     ##
@@ -60,11 +66,11 @@ class DisabledProfiler:
     def statistics(self):
         pass
 
-    def module_stats(self, module = None, comment = None):
+    def module_stats(self, module = None):
         pass
 
     def statistics_calls(self):
         pass
 
-    def module_stats_calls(self, module = None, comment = None):
+    def module_stats_calls(self, module = None):
         pass

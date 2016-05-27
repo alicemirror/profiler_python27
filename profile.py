@@ -54,21 +54,28 @@
 #           ...
 #   \endcode
 #
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
-# General Public License as published by the Free Software Foundation, either version 3 of the License,
-# or (at your option) any later version. \n
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.\n
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n
 #
-# You should have received a copy of the GNU LGPL along with this program.
-# If not, see <http://www.gnu.org/licenses/ \n
+# Copyright NXP PLMA.  All Rights Reserved.\n
+#
+# Licensed under the Apache License, Version 2.0 (the "License");\n
+# you may not use this file except in compliance with the License.\n
+# You may obtain a copy of the License at\n
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied.  See the License for the specific language
+# governing permissions and limitations under the License.
 #
 # @date March 2016
 # @author Enrico Miglino <enrico.miglino@gmail.com>
-# @version 0.1.4
-# @version documentation version 0.4
+# @version 0.1.5
+# @version documentation version 0.5
 
 ##
 # Class Profile is the main class managing the profiler framework
@@ -90,13 +97,13 @@ class Profile:
     #
     # @param is_enabled If set to false, the profiling is inactive
     # @param filename The (optional) name of the profiling results, when needed
-    def __init__(self, is_enabled = True, filename = 'profile.txt'):
+    def __init__(self, is_enabled = True, filename = ""):
 
         self.profile_file = filename
 
         if is_enabled:
             import enabled_profiler
-            self.profiler = enabled_profiler.EnabledProfiler()
+            self.profiler = enabled_profiler.EnabledProfiler(self.profile_file)
         else:
             import disabled_profiler
             self.profiler = disabled_profiler.DisabledProfiler()
@@ -152,10 +159,10 @@ class Profile:
 
     ##
     # Generates a report with the profiled statistics for the specific module
-    def profile_module(self, module = None, comment = None):
-        self.profiler.module_stats(module, comment)
+    def profile_module(self, module = None):
+        self.profiler.module_stats(module)
 
     ##
     # Generates a report with the profiled statistics based on callers and callees
-    def profile_module_calls(self, module = None, comment = None):
-        self.profiler.module_stats_calls(module, comment)
+    def profile_module_calls(self, module = None):
+        self.profiler.module_stats_calls(module)

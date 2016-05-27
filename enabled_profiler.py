@@ -13,21 +13,27 @@
 # In addition to the time profiler the memory profile is also available as an option. For more information on the
 # memory_profile package works see the package details on pythong.org: https://pypi.python.org/pypi/memory_profiler
 #
-# This program is free software: you can redistribute it and/or modify it under the terms of the GNU
-# General Public License as published by the Free Software Foundation, either version 3 of the License,
-# or (at your option) any later version. \n
-#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-# for more details.\n
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n
 #
-# You should have received a copy of the GNU General Public License along with this program.
-# If not, see <http://www.gnu.org/licenses/ \n
+# Copyright NXP PLMA.  All Rights Reserved.\n
+#
+# Licensed under the Apache License, Version 2.0 (the "License");\n
+# you may not use this file except in compliance with the License.\n
+# You may obtain a copy of the License at\n
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied.  See the License for the specific language
+# governing permissions and limitations under the License.
 #
 # @date March 2016
 # @author Enrico Miglino <enrico.miglino@gmail.com>
-# @version 0.1.3
-# @version documentation version 0.4
+# @version 0.1.5
+# @version documentation version 0.5
 
 import cProfile, pstats
 from memory_profiler import memory_usage
@@ -42,9 +48,16 @@ class EnabledProfiler:
 
     ##
     # Constructor
-    def __init__(self):
+    def __init__(self, outFilename = None):
         ## Initialises the flag to avoid multiple instances of the memory sampling class
         self.is_sammpling_memory = False
+
+        # Check for filename if reqiored
+        if outFilename is not None:
+            self.streamFile = outFilename
+            self.streaming = True
+        else:
+            self.streaming = False
 
     ## Start profiling the code execution.
     def enable(self):
@@ -127,17 +140,24 @@ class EnabledProfiler:
     #
     # Module name, Function name, Internal time
     def statistics(self):
-
-        stats = pstats.Stats(timingProf)
+        # Check for alternative out than stdout
+        if self.streaming:
+            # Open stream for writing
+            self.streamStats = open(self.streamFile, 'a')
+            stats = pstats.Stats(timingProf, stream=self.streamStats)
+        else:
+            stats = pstats.Stats(timingProf)
 
         timingProf.create_stats()
         stats.strip_dirs()
         stats.sort_stats('module', 'name', 'time')
         stats.print_stats()
 
-# print_callers
+        # close the streaming
+        self.streamStats.close()
 
-    ## Stop collecting profiling data and generates a satistics graphic report for callers and callees
+    ##
+    # Stop collecting profiling data and generates a satistics graphic report for callers and callees
     #
     # After the statistics object has been created, some adjustments are done for better readability of the
     # results: \n
@@ -147,7 +167,13 @@ class EnabledProfiler:
     # Module name, Function name, Internal time
     def statistics_calls(self):
 
-        stats = pstats.Stats(timingProf)
+        # Check for alternative out than stdout
+        if self.streaming:
+            # Open stream for writing
+            self.streamStats = open(self.streamFile, 'a')
+            stats = pstats.Stats(timingProf, stream=self.streamStats)
+        else:
+            stats = pstats.Stats(timingProf)
 
         timingProf.create_stats()
         stats.strip_dirs()
@@ -179,22 +205,23 @@ class EnabledProfiler:
     #   At last the statistics report is restricted to the specific module
     #
     #   \note If the module is not specified (default = None) this method has the same effect of statustucs()
-    def module_stats(self, module = None, comment = None):
+    def module_stats(self, module = None):
 
         if module == None:
             self.statistics()
         else:
-            stats = pstats.Stats(timingProf)
+            # Check for alternative out than stdout
+            if self.streaming:
+                # Open stream for writing
+                self.streamStats = open(self.streamFile, 'a')
+                stats = pstats.Stats(timingProf, stream=self.streamStats)
+            else:
+                stats = pstats.Stats(timingProf)
 
+            # Generate the statistics output
             timingProf.create_stats()
             stats.strip_dirs()
             stats.sort_stats('name', 'ncalls', 'time')
-            print "------------------------------------------------"
-            if not comment == None:
-                print comment
-            else:
-                print "Time module profiling"
-            print "------------------------------------------------"
             stats.print_stats(module)
 
     ##
@@ -210,28 +237,20 @@ class EnabledProfiler:
     #   At last the statistics report is restricted to the specific module
     #
     #   \note If the module is not specified (default = None) this method has the same effect of statustucs()
-    def module_stats_calls(self, module = None, comment = None):
+    def module_stats_calls(self, module = None):
 
         if module == None:
             self.statistics()
         else:
-            stats = pstats.Stats(timingProf)
+            # Check for alternative out than stdout
+            if self.streaming:
+                # Open stream for writing
+                self.streamStats = open(self.streamFile, 'a')
+                stats = pstats.Stats(timingProf, stream=self.streamStats)
+            else:
+                stats = pstats.Stats(timingProf)
 
             timingProf.create_stats()
             stats.strip_dirs()
             stats.sort_stats('name', 'ncalls', 'time')
-            print "------------------------------------------------"
-            print ">>> CALLERS"
-            print "------------------------------------------------"
-            if not comment == None:
-                print comment
-            print "------------------------------------------------"
-            stats.print_callers(module)
-            print "\n\n"
-            print "------------------------------------------------"
-            print ">>> CALLEES"
-            print "------------------------------------------------"
-            if not comment == None:
-                print comment
-            print "------------------------------------------------"
             stats.print_callees(module)
